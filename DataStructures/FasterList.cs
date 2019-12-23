@@ -809,6 +809,15 @@ namespace Svelto.DataStructures
             return -1;
         }
 
+        public int IndexOf(T item, IEqualityComparer<T> customComparer)
+        {
+            for (var index = 0; index < _count; index++)
+                if (customComparer.Equals(_buffer[index], item))
+                    return index;
+
+            return -1;
+        }
+
         public void Insert(int index, T item)
         {
             DBC.Common.Check.Require(index < _count, "out of bound index");
@@ -900,6 +909,18 @@ namespace Svelto.DataStructures
         public bool UnorderedRemove(T item)
         {
             var index = IndexOf(item);
+
+            if (index == -1)
+                return false;
+
+            UnorderedRemoveAt(index);
+
+            return true;
+        }
+
+        public bool UnorderedRemove(T item, IEqualityComparer<T> customComparer)
+        {
+            var index = IndexOf(item, customComparer);
 
             if (index == -1)
                 return false;
